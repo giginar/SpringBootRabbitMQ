@@ -1,5 +1,6 @@
 package com.yigit.productCRUD.controllers;
 
+import com.yigit.productCRUD.Service.ProductService;
 import com.yigit.productCRUD.models.Product;
 import com.yigit.productCRUD.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +27,16 @@ import java.util.Optional;
 public class ProductController {
 
     @Autowired
-    ProductRepository productRepository;
+    ProductService productService;
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String title) {
         try {
             List<Product> products = new ArrayList<>();
             if (title == null){
-                productRepository.findAll().forEach(products::add);
+                products = productService.getAllProducts();
             } else{
-                productRepository.findByTitleContaining(title).forEach(products::add);
+                products = productService.getProductByTitle(title);
             }
             if (products.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -48,7 +49,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") long id) {
-        Optional<Product> product = productRepository.findById(id);
+        Optional<Product> product = productService.getProductById(id);
         if (product.isPresent()) {
             return new ResponseEntity<>(product.get(), HttpStatus.OK);
         } else {
@@ -59,7 +60,7 @@ public class ProductController {
     @PostMapping("/products")
     public ResponseEntity<String > createProduct(@RequestBody Product product) {
         try {
-            productRepository.save(new Product(product.getTitle(), product.getDescription(), product.isPublished()));
+            productService.createProduct(new Product(product.getTitle(), product.getDescription(), product.isPublished()));
             return new ResponseEntity<>("Product was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -68,13 +69,14 @@ public class ProductController {
 
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable("id") long id, @RequestBody Product product) {
-        Optional<Product> productData = productRepository.findById(id);
+        Optional<Product> productData = productService.getProductById(id);
         if (productData.isPresent()) {
             Product updatedProduct = productData.get();
             updatedProduct.setTitle(product.getTitle());
             updatedProduct.setDescription(product.getDescription());
             updatedProduct.setPublished(product.isPublished());
-            return new ResponseEntity<>(productRepository.save(updatedProduct), HttpStatus.OK);
+            productService.updateProduct(updatedProduct);
+            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -83,7 +85,7 @@ public class ProductController {
     @DeleteMapping("/products/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         try {
-            productRepository.deleteById(id);
+            productService.deleteProduct(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -93,7 +95,7 @@ public class ProductController {
     @DeleteMapping("/products")
     public ResponseEntity<HttpStatus> deleteAllProducts() {
         try {
-            productRepository.deleteAll();
+            productService.deleteAllProducts();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -103,7 +105,7 @@ public class ProductController {
     @GetMapping("/products/published")
     public ResponseEntity<List<Product>> findByPublished() {
         try {
-            List<Product> products = productRepository.findByPublished(true);
+            List<Product> products = productService.findByPublished(true);
             if (products.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
