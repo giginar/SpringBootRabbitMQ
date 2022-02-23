@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,21 +17,20 @@ public class Product {
     private String title;
     @Column(name = "description")
     private String description;
+    @Column(name = "published")
+    private boolean published;
 
     public Product() {
     }
 
-    public Product(String title, String description) {
+    public Product(String title, String description, boolean published) {
         this.title = title;
         this.description = description;
+        this.published = published;
     }
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -50,4 +49,16 @@ public class Product {
         this.description = description;
     }
 
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    @Override
+    public String toString() {
+        return "Product [id=" + id + ", title=" + title + ", desc=" + description + ", published=" + published + "]";
+    }
 }
