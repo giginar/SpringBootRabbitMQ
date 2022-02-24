@@ -1,19 +1,29 @@
 package com.yigit.productCRUD.Service;
 
+import com.yigit.productCRUD.ProductCrudApplication;
 import com.yigit.productCRUD.models.Product;
 import com.yigit.productCRUD.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements ProductService{
 
+    private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+    private RabbitTemplate rabbitTemplate;
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository, RabbitTemplate rabbitTemplate) {
+        this.productRepository = productRepository;
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Override
     public List<Product> getAllProducts() {

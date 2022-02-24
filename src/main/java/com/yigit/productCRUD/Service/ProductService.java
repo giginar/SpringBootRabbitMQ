@@ -18,5 +18,4 @@ public interface ProductService {
     void deleteAllProducts();
     List<Product> findByPublished(boolean b);
 
-
 }

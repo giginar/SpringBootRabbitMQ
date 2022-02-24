@@ -1,5 +1,9 @@
 package com.yigit.productCRUD.models;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "product")
+@Table(name = "productv2")
+@ToString
+@NoArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,9 +25,6 @@ public class Product {
     private String description;
     @Column(name = "published")
     private boolean published;
-
-    public Product() {
-    }
 
     public Product(String title, String description, boolean published) {
         this.title = title;
@@ -57,8 +60,4 @@ public class Product {
         this.published = published;
     }
 
-    @Override
-    public String toString() {
-        return "Product [id=" + id + ", title=" + title + ", desc=" + description + ", published=" + published + "]";
-    }
 }
