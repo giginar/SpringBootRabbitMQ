@@ -30,7 +30,7 @@ import java.util.Optional;
  */
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("")
 public class ProductController {
 
     private static final Logger log = LogManager.getLogger(ProductController.class);
