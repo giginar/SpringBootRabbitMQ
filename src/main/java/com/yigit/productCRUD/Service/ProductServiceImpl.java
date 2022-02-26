@@ -11,14 +11,26 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.*;
 
+/**
+ * The type Product service.
+ */
 @Service
 public class ProductServiceImpl implements ProductService{
 
     private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
     private RabbitTemplate rabbitTemplate;
+    /**
+     * The Product repository.
+     */
     @Autowired
     ProductRepository productRepository;
 
+    /**
+     * Instantiates a new Product service.
+     *
+     * @param productRepository the product repository
+     * @param rabbitTemplate    the rabbit template
+     */
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, RabbitTemplate rabbitTemplate) {
         this.productRepository = productRepository;

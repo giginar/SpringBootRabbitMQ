@@ -23,6 +23,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 
+/**
+ * The type Web security config.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableWebMvc

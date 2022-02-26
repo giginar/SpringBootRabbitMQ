@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Product controller.
+ */
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
@@ -32,11 +35,23 @@ public class ProductController {
 
     private static final Logger log = LogManager.getLogger(ProductController.class);
 
+    /**
+     * The Product service.
+     */
     @Autowired
     ProductService productService;
+    /**
+     * The Rabbit template.
+     */
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+    /**
+     * Gets all products.
+     *
+     * @param title the title
+     * @return the all products
+     */
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String title) {
         try {
@@ -63,6 +78,12 @@ public class ProductController {
         }
     }
 
+    /**
+     * Gets product by id.
+     *
+     * @param id the id
+     * @return the product by id
+     */
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") long id) {
         Optional<Product> product = productService.getProductById(id);
@@ -76,6 +97,12 @@ public class ProductController {
         }
     }
 
+    /**
+     * Create product response entity.
+     *
+     * @param product the product
+     * @return the response entity
+     */
     @PostMapping("/products")
     public ResponseEntity<String > createProduct(@RequestBody Product product) {
         try {
@@ -88,6 +115,13 @@ public class ProductController {
         }
     }
 
+    /**
+     * Update product response entity.
+     *
+     * @param id      the id
+     * @param product the product
+     * @return the response entity
+     */
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable("id") long id, @RequestBody Product product) {
         Optional<Product> productData = productService.getProductById(id);
@@ -105,6 +139,12 @@ public class ProductController {
         }
     }
 
+    /**
+     * Delete product response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/products/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         try {
@@ -117,6 +157,11 @@ public class ProductController {
         }
     }
 
+    /**
+     * Delete all products response entity.
+     *
+     * @return the response entity
+     */
     @DeleteMapping("/products")
     public ResponseEntity<HttpStatus> deleteAllProducts() {
         try {
@@ -132,6 +177,11 @@ public class ProductController {
         }
     }
 
+    /**
+     * Find by published response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping("/products/published")
     public ResponseEntity<List<Product>> findByPublished() {
         try {
