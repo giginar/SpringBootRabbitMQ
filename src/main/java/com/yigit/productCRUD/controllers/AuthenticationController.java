@@ -1,7 +1,7 @@
 package com.yigit.productCRUD.controllers;
 
 import com.yigit.productCRUD.Service.UserService;
-import com.yigit.productCRUD.config.MessagingConfig;
+import com.yigit.productCRUD.models.ProjectConstants;
 import com.yigit.productCRUD.models.*;
 import com.yigit.productCRUD.requests.login.LoginRequest;
 import com.yigit.productCRUD.requests.registration.RegistrationRequest;
@@ -45,7 +45,7 @@ public class AuthenticationController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
             LoginStatus loginStatus = new LoginStatus(loginRequest,"LOGIN","Login successful");
-            rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,loginStatus);
+            rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,loginStatus);
             return userService.authenticateUser(loginRequest);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -62,7 +62,7 @@ public class AuthenticationController {
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest){
         try {
             RegistrationStatus registrationStatus = new RegistrationStatus(registrationRequest,"REGISTRATION","Registration successful.");
-            rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,registrationStatus);
+            rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,registrationStatus);
             return userService.registerUser(registrationRequest);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

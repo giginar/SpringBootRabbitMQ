@@ -4,6 +4,7 @@ import com.yigit.productCRUD.Service.ProductService;
 import com.yigit.productCRUD.config.MessagingConfig;
 import com.yigit.productCRUD.models.Product;
 import com.yigit.productCRUD.models.ProductStatus;
+import com.yigit.productCRUD.models.ProjectConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -60,13 +61,13 @@ public class ProductController {
                 products = productService.getAllProducts();
                 for (Product product: products) {
                     ProductStatus productStatus = new ProductStatus(product,"ACTIVE","Product found successfully");
-                    rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+                    rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
                 }
             } else{
                 products = productService.getProductByTitle(title);
                 for (Product product: products) {
                     ProductStatus productStatus = new ProductStatus(product,"ACTIVE","Product found successfully");
-                    rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+                    rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
                 }
             }
             if (products.isEmpty()) {
@@ -89,7 +90,7 @@ public class ProductController {
         Optional<Product> product = productService.getProductById(id);
         if (product.isPresent()) {
             ProductStatus productStatus = new ProductStatus(product.get(),"ACTIVE","Product found successfully");
-            rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+            rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
             return new ResponseEntity<>(product.get(), HttpStatus.OK);
         } else {
             log.info("::getProductById id not found");
@@ -108,7 +109,7 @@ public class ProductController {
         try {
             productService.createProduct(new Product(product.getTitle(), product.getDescription(), product.isPublished()));
             ProductStatus productStatus = new ProductStatus(product,"CREATING","Product created successfully");
-            rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+            rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
             return new ResponseEntity<>("Product was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -127,7 +128,7 @@ public class ProductController {
         Optional<Product> productData = productService.getProductById(id);
         if (productData.isPresent()) {
             ProductStatus productStatus = new ProductStatus(product,"UPDATING","Product updated successfully");
-            rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+            rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
             Product updatedProduct = productData.get();
             updatedProduct.setTitle(product.getTitle());
             updatedProduct.setDescription(product.getDescription());
@@ -149,7 +150,7 @@ public class ProductController {
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         try {
             ProductStatus productStatus = new ProductStatus(productService.getProductById(id).get(),"DELETING","Product deleted successfully");
-            rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+            rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
             productService.deleteProduct(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
@@ -168,7 +169,7 @@ public class ProductController {
             List<Product> products = productService.getAllProducts();
             for (Product product: products) {
                 ProductStatus productStatus = new ProductStatus(product,"DELETING","Product deleted successfully");
-                rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+                rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
             }
             productService.deleteAllProducts();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -188,7 +189,7 @@ public class ProductController {
             List<Product> products = productService.findByPublished(true);
             for (Product product: products) {
                 ProductStatus productStatus = new ProductStatus(product,"PUBLISHED","Published product found successfully");
-                rabbitTemplate.convertAndSend(MessagingConfig.EXCHANGE,MessagingConfig.ROUTING_KEY,productStatus);
+                rabbitTemplate.convertAndSend(ProjectConstants.EXCHANGE,ProjectConstants.ROUTING_KEY,productStatus);
             }
             if (products.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

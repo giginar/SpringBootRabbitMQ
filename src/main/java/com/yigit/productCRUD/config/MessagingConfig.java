@@ -1,5 +1,6 @@
 package com.yigit.productCRUD.config;
 
+import com.yigit.productCRUD.models.ProjectConstants;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,26 +16,13 @@ import org.springframework.context.annotation.Configuration;
 public class MessagingConfig {
 
     /**
-     * The constant QUEUE.
-     */
-    public static final String QUEUE = "ykucukcinar_queue";
-    /**
-     * The constant EXCHANGE.
-     */
-    public static final String EXCHANGE = "ykucukcinar_exchange";
-    /**
-     * The constant ROUTING_KEY.
-     */
-    public static final String ROUTING_KEY = "ykucukcinar_routingKey";
-
-    /**
      * Queue queue.
      *
      * @return the queue
      */
     @Bean
     public Queue queue() {
-        return new Queue(QUEUE);
+        return new Queue(ProjectConstants.QUEUE);
     }
 
     /**
@@ -44,7 +32,7 @@ public class MessagingConfig {
      */
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE);
+        return new TopicExchange(ProjectConstants.EXCHANGE);
     }
 
     /**
@@ -56,7 +44,7 @@ public class MessagingConfig {
      */
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+        return BindingBuilder.bind(queue).to(exchange).with(ProjectConstants.ROUTING_KEY);
     }
 
     /**
